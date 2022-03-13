@@ -1,0 +1,33 @@
+#####
+# Problem when Oracle DB is running and transfer via scp big data more than 1 TB 
+# Will cause Server slow and lagging eventhou after reboot still exist.
+# More than 5 users access into the server face same issue lagging at putty
+# The following is the fixed need to be done for Production Enviroment which have Oracle DB and scp
+# usage more than 1TB data transfer
+#
+
+edit /etc/sysconfig/network-scripts/ifcfg-lo
+add the following:
+
+MTU=16436
+
+Save the file, exit and restart the network service by running:
+
+Calculate the value for vm.min_free_kbytes to be 0.4 % of the total physical memory and multiply by the number of NUMA nodes.
+
+
+# total=$(awk '/MemTotal:(.*)/{print $2 }' /proc/meminfo)
+# numa_count=$(lscpu | awk '/^NUMA node\(s\)(.*)/{print $3 }')
+# min_free_kb=$(expr $total / 250 \* $numa_count) # this is the <VALUE>
+
+Increase the value of vm.min_free_kbytes accordingly. This can be done by adding following a new sysctl configuration.
+
+# echo "vm.min_free_kbytes=$min_free_kb" > /etc/sysctl.d/99-vm_min_free_kbytes.conf
+This will take the value of $min_free_kb from the previous step!
+
+Load the new values.
+
+# sysctl --system
+Verify the new value has been applied correctly.
+
+# sysctl vm.min_free_kbytes
