@@ -1,4 +1,6 @@
 
+#!/bin/bash
+
 #####
 # Problem when Oracle DB is running and transfer via scp big data more than 1 TB 
 # Will cause Server slow and lagging eventhou after reboot still exist.
